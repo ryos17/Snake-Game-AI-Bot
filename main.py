@@ -4,11 +4,10 @@ import threading
 from pynput.keyboard import Controller, Listener, KeyCode
 
 # assign stop and start key
-start_stop_key = KeyCode(char='q')
-exit_key = KeyCode(char='e')
+start_key = KeyCode(char='q')
 
 
-class PlayGame(threading.Thread): # PlayGame class extends Thread
+class PlayGame(threading.Thread):  # PlayGame class extends Thread
     def __init__(self):
         super(PlayGame, self).__init__()
         self.running = False
@@ -24,34 +23,32 @@ class PlayGame(threading.Thread): # PlayGame class extends Thread
         self.stop_playing()
         self.program_running = False
 
-    def moveBegin(self): # code for snake game
+    def moveBegin(self):  # code for snake game
+        t = 0.179  # number of tiles moving
         keyboard.type('d')
-        time.sleep(0.55)
+        time.sleep(t * 6)
         keyboard.type('w')
-        time.sleep(0.37)
-        counter = 0
-        while True: 
+        time.sleep(t * 4)
+        while True:
             keyboard.type('a')
-            time.sleep(0.79)
+            time.sleep(t * 9)
             keyboard.type('s')
-            time.sleep(0.72)
+            time.sleep(t * 8)
             keyboard.type('d')
             for i in range(4):
-                self.loop()
-            time.sleep(0.08)
+                self.loop(t)
+            time.sleep(0.1)  # quick turns require smaller time frame
             keyboard.type('w')
-            time.sleep(0.791)
-            time.sleep(counter)
-            counter += 0.0005
+            time.sleep(t * 8)
 
-    def loop(self): # code for the loop portion
-        time.sleep(0.08)
+    def loop(self, t): # code for the loop portion
+        time.sleep(0.1)
         keyboard.type('w')
-        time.sleep(0.6584)
+        time.sleep(t * 7)
         keyboard.type('d')
-        time.sleep(0.08)
+        time.sleep(0.1)
         keyboard.type('s')
-        time.sleep(0.658035)
+        time.sleep(t * 7)
         keyboard.type('d')
 
     def run(self):
@@ -67,14 +64,11 @@ click_thread.start()
 
 
 def on_press(key):
-    if key == start_stop_key:
+    if key == start_key:
         if click_thread.running:
             click_thread.stop_playing()
         else:
             click_thread.start_playing()
-    elif key == exit_key:
-        click_thread.exit()
-        listener.stop()
 
 
 with Listener(on_press=on_press) as listener:
