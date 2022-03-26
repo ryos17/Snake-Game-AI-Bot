@@ -37,16 +37,16 @@ class PlayGame(threading.Thread):  # PlayGame class extends Thread
             keyboard.type('d')
             for i in range(4):
                 self.loop(t)
-            time.sleep(0.1)  # quick turns require smaller time frame
+            time.sleep(t)  # quick turns require smaller time frame
             keyboard.type('w')
             time.sleep(t * 8)
 
     def loop(self, t): # code for the loop portion
-        time.sleep(0.1)
+        time.sleep(t)
         keyboard.type('w')
         time.sleep(t * 7)
         keyboard.type('d')
-        time.sleep(0.1)
+        time.sleep(t)
         keyboard.type('s')
         time.sleep(t * 7)
         keyboard.type('d')
