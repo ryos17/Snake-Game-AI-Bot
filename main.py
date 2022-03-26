@@ -1,75 +1,61 @@
 # import
 import time
-import threading
-from pynput.keyboard import Controller, Listener, KeyCode
-
-# assign stop and start key
-start_key = KeyCode(char='q')
+import pyautogui
+import keyboard
 
 
-class PlayGame(threading.Thread):  # PlayGame class extends Thread
-    def __init__(self):
-        super(PlayGame, self).__init__()
-        self.running = False
-        self.program_running = True
-
-    def start_playing(self):
-        self.running = True
-
-    def stop_playing(self):
-        self.running = False
-
-    def exit(self):
-        self.stop_playing()
-        self.program_running = False
-
-    def moveBegin(self):  # code for snake game
-        t = 0.179  # number of tiles moving
-        keyboard.type('d')
-        time.sleep(t * 6)
-        keyboard.type('w')
-        time.sleep(t * 4)
-        while True:
-            keyboard.type('a')
-            time.sleep(t * 9)
-            keyboard.type('s')
-            time.sleep(t * 8)
-            keyboard.type('d')
-            for i in range(4):
-                self.loop(t)
-            time.sleep(t)  # quick turns require smaller time frame
-            keyboard.type('w')
-            time.sleep(t * 8)
-
-    def loop(self, t): # code for the loop portion
-        time.sleep(t)
-        keyboard.type('w')
-        time.sleep(t * 7)
-        keyboard.type('d')
-        time.sleep(t)
-        keyboard.type('s')
-        time.sleep(t * 7)
-        keyboard.type('d')
-
-    def run(self):
-        while self.program_running:
-            while self.running:
-                self.moveBegin()
-            time.sleep(1)
+def moveBegin():  # code for snake game
+    t = 0.165  # seconds per tile (0.165 for slow, 0.118 for medium, 0.0707 for fast)
+    pyautogui.keyDown('d')
+    time.sleep(t * 6)
+    pyautogui.keyDown('w')
+    time.sleep(t * 4)
+    while True:
+        if keyboard.is_pressed('e'):
+            break
+        pyautogui.keyDown('a')
+        if keyboard.is_pressed('e'):
+            break
+        time.sleep(t * 9)
+        pyautogui.keyDown('s')
+        if keyboard.is_pressed('e'):
+            break
+        time.sleep(t * 8)
+        pyautogui.keyDown('d')
+        br = False
+        for _ in range(4):
+            if loop(t):
+                br = True
+        if br: break
+        time.sleep(t * 0.48485)  # calculated ratio for quick turns
+        pyautogui.keyDown('w')
+        if keyboard.is_pressed('e'):
+            break
+        time.sleep(t * 8)
 
 
-keyboard = Controller()
-click_thread = PlayGame()
-click_thread.start()
+def loop(t):  # code for loop portion
+    if keyboard.is_pressed('e'):
+        return True
+    time.sleep(t * 0.24242)  # calculated ratio for quick turns
+    pyautogui.keyDown('w')
+    if keyboard.is_pressed('e'):
+        return True
+    time.sleep(t * 7)
+    pyautogui.keyDown('d')
+    if keyboard.is_pressed('e'):
+        return True
+    time.sleep(t * 0.2424)
+    pyautogui.keyDown('s')
+    if keyboard.is_pressed('e'):
+        return True
+    time.sleep(t * 7)
+    pyautogui.keyDown('d')
+    if keyboard.is_pressed('e'):
+        return True
 
 
-def on_press(key):
-    if key == start_key:
-        if click_thread.running:
-            click_thread.stop_playing()
-        else:
-            click_thread.start_playing()
-
-
-with Listener(on_press=on_press) as listener:
-    listener.join()
+while True:  # start bot when user press 'q'
+    if keyboard.is_pressed('q'):
+        moveBegin()
+        break
